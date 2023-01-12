@@ -15,6 +15,7 @@ const viewEmployee = async () => {
       employee.first_name,
       employee.last_name,
       role.title,
+      department.name as department,
       role.salary,
       CONCAT(
           manager.first_name,
@@ -24,8 +25,10 @@ const viewEmployee = async () => {
       FROM employee
       JOIN role
       ON employee.role_id = role.id
-      JOIN employee AS manager
+      LEFT JOIN employee AS manager
       ON employee.manager_id = manager.id
+      JOIN department
+      ON role.department_id = department.id
       `
     const [employees] = await db.promise().query(finalEmployees);
     console.table(employees);
@@ -93,10 +96,11 @@ const newRole = () => {
             init();
         });
 }
+
 const updateEmployeeRole = async () => {
-    const [employees] = await db.promise().query('SELECT CONCAT (first_name, " ", last_name) AS name FROM employee')
+    const [employees] = await db.promise().query('SELECT CONCAT (first_name, " ", last_name) AS name, id as value FROM employee')
     console.log(employees);
-    const [roles] = await db.promise().query('SELECT CONCAT (id, " ", title) as updateRole FROM role')
+    const [roles] = await db.promise().query('SELECT title as name, id as value FROM role')
     console.log(roles);
     prompt([
         {
