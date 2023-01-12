@@ -41,7 +41,55 @@ const newDepartment = () => {
     ])
     .then((answer) => {
         db.query('INSERT INTO department (name) VALUES ("' + answer.department + '");')
-        console.log('Department sucessfully added!');
+        console.log('Department successfully added!');
+        init();
+    });
+}
+const newEmployee = () => {
+    prompt([
+        {
+          name: 'first_name',
+          message: 'Enter the employee\'s first name.',
+        },
+        {
+          name: 'last_name',
+          message: 'Enter the employee\'s last name.',
+        },
+        {
+          name: 'role_id',
+          message: 'Enter the employee\'s role id.',
+        },
+        {
+          name: 'manager_id',
+          message: 'Enter the employee\'s manager id.',
+        },
+        
+    ])
+    .then((answer) => {
+        db.query('INSERT INTO employee (first_name, last_name, role_id,manager_id) VALUES ("' + answer.first_name + '"' + ',' + '"' + answer.last_name + '"' + ',' + answer.role_id + ',' + answer.manager_id + ');')
+        console.log('Employee successfully added!');
+        init();
+    });
+}
+
+const newRole = () => {
+    prompt([
+        {
+          name: 'title',
+          message: 'Enter the role\'s title.',
+        },
+        {
+          name: 'salary',
+          message: 'Enter the role\'s salary.',
+        },
+        {
+          name: 'department_id',
+          message: 'Enter the role\'s department id.',
+        },
+    ])
+    .then((answer) => {
+        db.query('INSERT INTO role (title, salary, department_id) VALUES ("' + answer.title + '"' + ',' + answer.salary + ',' + answer.department_id + ');')
+        console.log('Role successfully added!');
         init();
     });
 }
@@ -70,8 +118,16 @@ const chooseOption = (type) => {
             newDepartment();
             };
             break;
+        case 'Add new role': {
+            newRole();
+            };
+            break;
+        case 'Add new employee': {
+            newEmployee();
+            };
+            break;
         };
-    }
+    };
 
 const init = () => {
     prompt({
@@ -82,6 +138,8 @@ const init = () => {
             'View all departments',
             'View all roles',
             'Add new department',
+            'Add new role',
+            'Add new employee',
         ],
         name: 'type',
     })
