@@ -32,6 +32,20 @@ const viewEmployee = async () => {
       init();
   };
 
+const newDepartment = () => {
+    prompt([
+        {
+          name: 'department',
+          message: 'Enter the department to be added.',
+        },
+    ])
+    .then((answer) => {
+        db.query('INSERT INTO department (name) VALUES ("' + answer.department + '");')
+        console.log('Department sucessfully added!');
+        init();
+    });
+}
+
 const chooseOption = (type) => {
     switch (type) {
         case 'View all employees': {
@@ -52,8 +66,12 @@ const chooseOption = (type) => {
             });
             break;
         };
+        case 'Add new department': {
+            newDepartment();
+            };
+            break;
+        };
     }
-}
 
 const init = () => {
     prompt({
@@ -62,7 +80,8 @@ const init = () => {
         choices: [
             'View all employees',
             'View all departments',
-            'View all roles'
+            'View all roles',
+            'Add new department',
         ],
         name: 'type',
     })
