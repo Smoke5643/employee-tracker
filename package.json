@@ -1,4 +1,12 @@
 {
+  "name": "employee-traker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
   "dependencies": {
     "console.table": "^0.10.0",
     "inquirer": "^8.2.4",
