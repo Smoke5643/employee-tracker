@@ -27,71 +27,96 @@ const viewEmployee = async () => {
       JOIN employee AS manager
       ON employee.manager_id = manager.id
       `
-      const [employees] = await db.promise().query(finalEmployees);
-      console.table(employees);
-      init();
-  };
+    const [employees] = await db.promise().query(finalEmployees);
+    console.table(employees);
+    init();
+};
 
 const newDepartment = () => {
     prompt([
         {
-          name: 'department',
-          message: 'Enter the department to be added.',
+            name: 'department',
+            message: 'Enter the department to be added.',
         },
     ])
-    .then((answer) => {
-        db.query('INSERT INTO department (name) VALUES ("' + answer.department + '");')
-        console.log('Department successfully added!');
-        init();
-    });
+        .then((answer) => {
+            db.query('INSERT INTO department (name) VALUES ("' + answer.department + '");')
+            console.log('Department successfully added!');
+            init();
+        });
 }
 const newEmployee = () => {
     prompt([
         {
-          name: 'first_name',
-          message: 'Enter the employee\'s first name.',
+            name: 'first_name',
+            message: 'Enter the employee\'s first name.',
         },
         {
-          name: 'last_name',
-          message: 'Enter the employee\'s last name.',
+            name: 'last_name',
+            message: 'Enter the employee\'s last name.',
         },
         {
-          name: 'role_id',
-          message: 'Enter the employee\'s role id.',
+            name: 'role_id',
+            message: 'Enter the employee\'s role id.',
         },
         {
-          name: 'manager_id',
-          message: 'Enter the employee\'s manager id.',
+            name: 'manager_id',
+            message: 'Enter the employee\'s manager id.',
         },
-        
+
     ])
-    .then((answer) => {
-        db.query('INSERT INTO employee (first_name, last_name, role_id,manager_id) VALUES ("' + answer.first_name + '"' + ',' + '"' + answer.last_name + '"' + ',' + answer.role_id + ',' + answer.manager_id + ');')
-        console.log('Employee successfully added!');
-        init();
-    });
+        .then((answer) => {
+            db.query('INSERT INTO employee (first_name, last_name, role_id,manager_id) VALUES ("' + answer.first_name + '"' + ',' + '"' + answer.last_name + '"' + ',' + answer.role_id + ',' + answer.manager_id + ');')
+            console.log('Employee successfully added!');
+            init();
+        });
 }
 
 const newRole = () => {
     prompt([
         {
-          name: 'title',
-          message: 'Enter the role\'s title.',
+            name: 'title',
+            message: 'Enter the role\'s title.',
         },
         {
-          name: 'salary',
-          message: 'Enter the role\'s salary.',
+            name: 'salary',
+            message: 'Enter the role\'s salary.',
         },
         {
-          name: 'department_id',
-          message: 'Enter the role\'s department id.',
+            name: 'department_id',
+            message: 'Enter the role\'s department id.',
         },
     ])
-    .then((answer) => {
-        db.query('INSERT INTO role (title, salary, department_id) VALUES ("' + answer.title + '"' + ',' + answer.salary + ',' + answer.department_id + ');')
-        console.log('Role successfully added!');
-        init();
-    });
+        .then((answer) => {
+            db.query('INSERT INTO role (title, salary, department_id) VALUES ("' + answer.title + '"' + ',' + answer.salary + ',' + answer.department_id + ');')
+            console.log('Role successfully added!');
+            init();
+        });
+}
+const updateEmployeeRole = async () => {
+    const [employees] = await db.promise().query('SELECT CONCAT (first_name, " ", last_name) AS name FROM employee')
+    console.log(employees);
+    const [roles] = await db.promise().query('SELECT CONCAT (id, " ", title) as updateRole FROM role')
+    console.log(roles);
+    prompt([
+        {
+            type: 'rawlist',
+            name: 'employee',
+            message: 'Which employee\'s role would you like to update?',
+            choices: employees,
+        },
+        {
+            type: 'rawlist',
+            name: 'role',
+            message: 'What is that employee\'s new role?',
+            choices: roles,
+        },
+    ])
+        .then((answer) => {
+            db.query('UPDATE employee (role_id) SET (' + answer.role + ')' + 'WHERE employee =' + '("' + answer.employee + '");')
+            console.log('Employee role updated successfully!');
+            init();
+        });
 }
 
 const chooseOption = (type) => {
@@ -116,18 +141,22 @@ const chooseOption = (type) => {
         };
         case 'Add new department': {
             newDepartment();
-            };
+        };
             break;
         case 'Add new role': {
             newRole();
-            };
+        };
             break;
         case 'Add new employee': {
             newEmployee();
-            };
-            break;
         };
+            break;
+        case 'Update employee role': {
+            updateEmployeeRole();
+        };
+            break;
     };
+};
 
 const init = () => {
     prompt({
@@ -140,12 +169,13 @@ const init = () => {
             'Add new department',
             'Add new role',
             'Add new employee',
+            'Update employee role',
         ],
         name: 'type',
     })
-    .then((answers) => {
-        chooseOption(answers.type);
-    });
+        .then((answers) => {
+            chooseOption(answers.type);
+        });
 }
 
 init();
