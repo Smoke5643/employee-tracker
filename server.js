@@ -1,13 +1,14 @@
+// Requires all necessary modules
 const inquirer = require('inquirer');
 const prompt = inquirer.createPromptModule();
 const mysql = require('mysql2');
 require('console.table');
-
+// Creates connection to database in mysql
 const db = mysql.createConnection({
     user: "root",
     database: "employees_db",
 });
-
+// Function to view all employees in the company
 const viewEmployee = async () => {
     const finalEmployees = `
       SELECT
@@ -34,7 +35,7 @@ const viewEmployee = async () => {
     console.table(employees);
     init();
 };
-
+// Function to create a new department for the company
 const newDepartment = () => {
     prompt([
         {
@@ -50,6 +51,7 @@ const newDepartment = () => {
             });
         });
 }
+// Function to add a new employee to the company
 const newEmployee = async () => {
     const [roles] = await db.promise().query('SELECT title as name, id as value FROM role')
     const [managers] = await db.promise().query('SELECT CONCAT(first_name, " ", last_name) as name, id as value FROM employee')
@@ -84,7 +86,7 @@ const newEmployee = async () => {
             });
         });
 }
-
+// Function to add a role in a department that is already setup 
 const newRole = async () => {
     const [departments] = await db.promise().query('SELECT name, id as value FROM department')
     prompt([
@@ -111,7 +113,7 @@ const newRole = async () => {
             });
         });
 }
-
+// Function to update an employee's role
 const updateEmployeeRole = async () => {
     const [employees] = await db.promise().query('SELECT CONCAT (first_name, " ", last_name) AS name, id as value FROM employee')
     const [roles] = await db.promise().query('SELECT title as name, id as value FROM role')
@@ -137,7 +139,7 @@ const updateEmployeeRole = async () => {
             });
         });
 }
-
+// Function to render all data necessary for the CLI prompts
 const chooseOption = (type) => {
     switch (type) {
         case 'View all employees': {
@@ -179,7 +181,7 @@ const chooseOption = (type) => {
         };
     };
 };
-
+// Initializer function to start the CLI app
 const init = () => {
     prompt({
         type: 'rawlist',
@@ -200,5 +202,5 @@ const init = () => {
             chooseOption(answers.type);
         });
 }
-
+// Main initializer for the app
 init();
